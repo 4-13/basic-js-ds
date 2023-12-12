@@ -1,49 +1,147 @@
 const { NotImplementedError } = require('../extensions/index.js');
 
-// const { Node } = require('../extensions/list-tree.js');
+const { Node } = require('../extensions/list-tree.js');
 
 /**
-* Implement simple binary search tree according to task description
-* using Node from extensions
-*/
+ * Implement simple binary search tree according to task description
+ * using Node from extensions
+ */
+
 class BinarySearchTree {
+  constructor() {
+    this._root = null;
+  }
 
   root() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    return this._root;
   }
 
-  add(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  add(value, targetNode = this._root) {
+    const node = new Node(value);
+
+    //FIX this._root somehow?
+    if (!this._root) {
+      this._root = node;
+      return;
+    }
+
+    if (value < targetNode.data) {
+      if (!targetNode.left) {
+        targetNode.left = node;
+      } else {
+        this.add(value, targetNode.left);
+      }
+    }
+
+    else if (value > targetNode.data) {
+      if (!targetNode.right) {
+        targetNode.right = node;
+      } else {
+        this.add(value, targetNode.right);
+      }
+    }
   }
 
-  has(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  has(value) {
+    return !!this.find(value);
   }
 
-  find(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  find(value, targetNode = this._root) {
+    if (value === targetNode?.data) {
+      return targetNode;
+    }
+
+    if (value < targetNode?.data) {
+      return this.find(value, targetNode.left);
+    }
+
+    else if (value > targetNode?.data) {
+      return this.find(value, targetNode.right)
+    }
+
+    return null;
   }
 
-  remove(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  min(targetNode = this._root) {
+    if (!targetNode) {
+      return null;
+    }
+
+    let currentNode = targetNode;
+
+    while (currentNode.left) {
+      currentNode = currentNode.left;
+    }
+
+    return currentNode.data
   }
 
-  min() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  max(targetNode = this._root) {
+    if (!targetNode) {
+      return null;
+    }
+
+    let currentNode = targetNode;
+
+    while (currentNode.right) {
+      currentNode = currentNode.right;
+    }
+
+    return currentNode.data
   }
 
-  max() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  remove(value, targetNode = this._root) {
+    if (!targetNode) {
+      return;
+    }
+
+    if (value === this._root.data) {
+      this._root = null;
+    }
+
+    let parentNode = targetNode;
+    let currentNode = targetNode;
+    let childPos = '';
+
+    while (currentNode) {
+      if (value === currentNode.data) {
+        break;
+      } else if (value < currentNode.data) {
+        parentNode = currentNode;
+        currentNode = currentNode.left;
+        childPos = 'left';
+      } else if (value > currentNode.data) {
+        parentNode = currentNode;
+        currentNode = currentNode.right;
+        childPos = 'right';
+      } else {
+        currentNode = null;
+      }
+    }
+
+    if (!currentNode) {
+      return
+    }
+
+    if (!currentNode.left && !currentNode.right) {
+      if (childPos === 'left') {
+        parentNode.left = null;
+      }
+      else if (childPos === 'right') {
+        parentNode.right = null;
+      }
+    }
+
+    if (!currentNode.left && currentNode.right) {
+      parentNode.right = currentNode.right;
+    }
+    if (currentNode.left && !currentNode.right) {
+      parentNode.left = currentNode.left;
+    }
   }
 }
 
+
 module.exports = {
-  BinarySearchTree
+  BinarySearchTree,
 };
